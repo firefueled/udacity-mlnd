@@ -13507,6 +13507,11 @@ gCIiIiIiomOkAxQRERERER3jHwl3tA9IKznIAAAAAElFTkSuQmCC
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong> max_depth=3</p>
 <p>The second graph seems to be the most promising because the accuracy on the testing set is highest and the curves are converging to a score of around 0.8. However, adding more points to any of the sets would not significantly increase their scores as they seem to have hit an asymptote.</p>
+<p>In the initial phase of measuring the performances:</p>
+<ul>
+<li>the trainning set starts at 1 because the low number of data points allows it's predictions to perfectly imitate the model; but starts to realistically decrease as more data is used</li>
+<li>the testing set starts at 0 because the low number of data points is not enough for a good fit of the model, which causes very bad predictions. It increases drastically as more data is used, up until a "saturation point".</li>
+</ul>
 
 </div>
 </div>
@@ -13965,12 +13970,9 @@ xhhjgoYlPWOMMUHDkp4xxpigYUnPGGNM0LCkZ4wxJmj8P0AxppcvAt2zAAAAAElFTkSuQmCC
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong> A max_depth of 1 is not enough for the model to overcome its bias. It would be too simple.</p>
-<p>A max_depth of 10 would be too complex, and probably overfit, since the model do not seem to improve after a max_depth of 4.</p>
-<p>The main clues that indicate the statements above are two, and refer to the testing curve:</p>
-<ul>
-<li>a lower score, with an highly increasing tendency, for a model that is too simple;</li>
-<li>a higher score, with a slowly decreasing tendency, for the overly complex model.</li>
-</ul>
+<p>A max_depth of 10 would suffer from high variance because of its extreme complexity.</p>
+<p>It's possible to see that the model is overfit, after max_depth=4, because the training score tends to 1, which indicates that the model is trying to simply imitate the data, while the validation score starts decreasing, which indicates that the model is getting worse.</p>
+<p>Another visual clue is the slight convergence, or at least non-divergence, of both curves towards the 4 value; and it's subsequent divergence after that.</p>
 
 </div>
 </div>
@@ -13990,7 +13992,7 @@ xhhjgoYlPWOMMUHDkp4xxpigYUnPGGNM0LCkZ4wxJmj8P0AxppcvAt2zAAAAAElFTkSuQmCC
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Answer: </strong> 4. The models' score doesn't increase after that value. The graph clearly shows that the score starts to decrease after the value, which indicates overfitting.</p>
+<p><strong>Answer: </strong> 4. The models' validation score doesn't increase after that value. The graph clearly shows that the score starts to decrease after the value, which indicates overfitting.</p>
 
 </div>
 </div>
@@ -14045,7 +14047,8 @@ xhhjgoYlPWOMMUHDkp4xxpigYUnPGGNM0LCkZ4wxJmj8P0AxppcvAt2zAAAAAElFTkSuQmCC
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong> It's a way of validating the goodness of the fit against the training data set before using it to make predictions on the testing set, with the objective of seeing whether the model is under/over-fitted.
 K-Fold splits the training set into folds, and repeatedly evaluates the performance metric using one of the folds as testing set, and the rest as training.</p>
-<p>Generally, it is a good technique to use because of the benefits provided above. On sklearn, the grid search hyperparameter selection can be run together with a cross validation, like kfold, by using only one method call. This facilitates the model implementation.</p>
+<p>It then aggregates the results found into a final performance or error value. This value is used to make a decision on which model to chose by picking the best one.</p>
+<p>Doing cross validation together with hyperparameter tunning allows the latter to utilize all of the data available, instead of just a part of it. The averaged metric that is taken out of this process, lessens any problems that may arise from unwanted patterns in the data distribution.</p>
 
 </div>
 </div>
@@ -14082,7 +14085,7 @@ For the <code>fit_model</code> function in the code cell below, you will need to
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[57]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># TODO: Import &#39;make_scorer&#39;, &#39;DecisionTreeRegressor&#39;, and &#39;GridSearchCV&#39;</span>
@@ -14100,7 +14103,7 @@ For the <code>fit_model</code> function in the code cell below, you will need to
     <span class="n">cv_sets</span> <span class="o">=</span> <span class="n">ShuffleSplit</span><span class="p">(</span><span class="n">n_splits</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.20</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># 0.18</span>
 
     <span class="c1"># TODO: Create a decision tree regressor object</span>
-    <span class="n">regressor</span> <span class="o">=</span> <span class="n">DecisionTreeRegressor</span><span class="p">()</span>
+    <span class="n">regressor</span> <span class="o">=</span> <span class="n">DecisionTreeRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 
     <span class="c1"># TODO: Create a dictionary for the parameter &#39;max_depth&#39; with a range from 1 to 10</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;max_depth&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">]}</span>
