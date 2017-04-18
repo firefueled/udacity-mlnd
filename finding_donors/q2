@@ -1,0 +1,6 @@
+#Decision Trees#
+
+Because DT's are very simple and flexible, and low cost, they can be used in a very large range of options. A simple example would be: predicting whether a student will succeed in high school based on data about it's grades and personal life.
+Because DT's are based on simple boolean decisions, they are relatively easy to compute, understand and visualize; somewhat mirroring how a person would make a decision in real life. *** They also do not require the data to be preprocessed as much as other learning methods because they consider the feature values merely as branching points, instead of ***
+They are prone to overfitting if not properly prunned by carefully managing depth length and the amount of nodes necessary for a split to occur. They also tend to be fragile, suffering huge changes based on new data input.
+Since DTs can be used in a lot of cases and this does not look like one of the extreme example where a DT would be really bad (XOR-like), it is a good candidate. The large number of OneHotEncoded features may work on it's advantage over other methods because of it's linear complexity.
